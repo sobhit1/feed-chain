@@ -1,0 +1,37 @@
+# ----------------------------
+# build output and dependencies
+# ----------------------------
+
+node_modules
+dist
+build
+coverage
+
+# ----------------------------
+# configuration and lock files
+# ----------------------------
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ----------------------------
+# environment and system files
+# ----------------------------
+
+.env
+.env.*
+.DS_Store
+
+# ----------------------------
+# Husky and Cypress
+# ----------------------------
+
+.husky
+cypress
+
+# ----------------------------
+# public assets
+# ----------------------------
+
+public

@@ -1,0 +1,85 @@
+# ----------------------------
+# Root / Global
+# ----------------------------
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+target/
+docker-compose.override.yml
+docker-data/
+logs/
+*.log
+
+# ----------------------------
+# Backend (Java + Spring Boot + Maven)
+# ----------------------------
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+!backend/**/src/main/**/target/
+!backend/**/src/test/**/target/
+
+# STS / Spring Tools Suite
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings
+backend/.springBeans
+backend/.sts4-cache
+
+# IntelliJ IDEA
+backend/.idea/
+backend/*.iws
+backend/*.iml
+backend/*.ipr
+
+# NetBeans
+backend/nbproject/private/
+backend/nbbuild/
+backend/dist/
+backend/nbdist/
+backend/.nb-gradle/
+backend/build/
+!backend/**/src/main/**/build/
+!backend/**/src/test/**/build/
+
+# ----------------------------
+# Frontend (React + Vite + Node.js)
+# ----------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/.vite/
+frontend/.parcel-cache/
+frontend/.turbo/
+frontend/.yarn/cache/
+
+# ----------------------------
+# IDEs
+# ----------------------------
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ----------------------------
+# OS Files
+# ----------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Docker
+# ----------------------------
+.dockerignore
+*.dockerfile
+docker-compose.override.yml
