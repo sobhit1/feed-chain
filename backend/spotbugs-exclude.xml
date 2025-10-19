@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="~.*Test"/>
+    </Match>
+    <Match>
+        <Package name="~com\.example\.backend\.generated.*"/>
+    </Match>
+    <Match>
+        <Bug pattern="DMI.*"/>
+    </Match>
+    <Match>
+        <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+    </Match>
+</FindBugsFilter>
