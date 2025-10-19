@@ -11,45 +11,63 @@ on:
       - develop
 
 jobs:
-  build:
+  build-backend:
+    name: Build & Test Backend
     runs-on: ubuntu-latest
 
     services:
       mongo:
-        image: mongo:6
+        image: mongo:6.0
         ports:
           - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
       redis:
-        image: redis:7
+        image: redis:7.0
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
 
     steps:
+      # Step 1: Checkout repo
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
+      # Step 2: Set up JDK 25 (Temurin)
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
         with:
-          java-version: 21
-          distribution: temurin
+          java-version: 25
+          distribution: 'temurin'
+          cache: maven
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      # Step 3: Verify Maven setup
+      - name: Verify Maven Version
+        run: mvn -v
 
-      - name: Build & Run Tests
-        run: mvn clean verify -B
+      # Step 4: Build, Lint & Test Backend
+      - name: Build & Run Checks
+        working-directory: ./backend
+        env:
+          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/foodwaste
+          SPRING_REDIS_HOST: localhost
+          SPRING_REDIS_PORT: 6379
+        run: |
+          mvn -B clean verify -DskipTests=false
 
-      - name: Run Spotless (format check)
-        run: mvn spotless:check
-
-      - name: Run Checkstyle
-        run: mvn checkstyle:check
-
+      # Step 5: Build Docker Image
       - name: Build Docker Image
-        run: docker build -t backend:ci .
+        working-directory: ./backend
+        run: |
+          docker build -t feedchain-backend-ci .
+
+      # Step 6: List Docker Images for Debugging
+      - name: Verify Docker Image
+        run: docker images | grep feedchain-backend-ci

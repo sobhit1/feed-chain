@@ -6,17 +6,20 @@ FROM eclipse-temurin:25-jdk-alpine AS build
 # Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first for caching dependencies
+# Install Maven Wrapper permissions (optional safety)
+RUN apk add --no-cache bash curl
+
+# Copy Maven wrapper and pom.xml first for dependency caching
 COPY pom.xml mvnw* ./
 COPY .mvn .mvn
 
-# Download dependencies only
+# Pre-download dependencies (cached unless pom.xml changes)
 RUN ./mvnw dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
 
-# Build the Spring Boot JAR, skip tests to speed up
+# Build the Spring Boot JAR, skip tests to speed up CI/CD
 RUN ./mvnw clean package -DskipTests
 
 # ==============================
@@ -24,17 +27,24 @@ RUN ./mvnw clean package -DskipTests
 # ==============================
 FROM eclipse-temurin:25-jre-alpine
 
+# Create a non-root user for security
+RUN addgroup -S spring && adduser -S spring -G spring
+
 # Set working directory
 WORKDIR /app
 
-# Copy the built JAR from the previous stage
-COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+# Copy built JAR from the build stage
+COPY --from=build /app/target/*.jar app.jar
 
 # Expose the port Spring Boot runs on
 EXPOSE 8080
 
-# Optional: Set Java memory options
+# Set environment variables
 ENV JAVA_OPTS="-Xms128m -Xmx512m"
+ENV TZ=Asia/Kolkata
 
-# Run the JAR
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Use non-root user
+USER spring
+
+# Start the Spring Boot app
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]

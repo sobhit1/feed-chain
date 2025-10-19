@@ -1,0 +1,87 @@
+version: "3.9"
+
+services:
+  # FRONTEND (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: feedchain-frontend:latest
+    container_name: feedchain_frontend
+    ports:
+      - "80:80" # Accessible at http://localhost
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - feedchain-net
+
+  # BACKEND (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: feedchain-backend:latest
+    container_name: feedchain_backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MONGO_URI: mongodb://mongo:27017/feedchain
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MAIL_HOST: maildev
+      MAIL_PORT: 1025
+    depends_on:
+      - mongo
+      - redis
+      - maildev
+    restart: unless-stopped
+    networks:
+      - feedchain-net
+
+  # MONGODB
+  mongo:
+    image: mongo:6.0
+    container_name: feedchain_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - feedchain-net
+
+  # REDIS
+  redis:
+    image: redis:7.0-alpine
+    container_name: feedchain_redis
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - feedchain-net
+
+  # MAILDEV
+  maildev:
+    image: maildev/maildev:2.1.0
+    container_name: feedchain_maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    restart: unless-stopped
+    networks:
+      - feedchain-net
+
+volumes:
+  mongo-data:
+  redis-data:
+
+networks:
+  feedchain-net:
+    driver: bridge
