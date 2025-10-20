@@ -9,7 +9,7 @@ services:
     image: feedchain-frontend:latest
     container_name: feedchain_frontend
     ports:
-      - "80:80" # Accessible at http://localhost
+      - "80:80"
     restart: unless-stopped
     depends_on:
       - backend
