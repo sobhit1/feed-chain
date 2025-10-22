@@ -1,0 +1,54 @@
+# ============================================================
+# PRODUCTION PROFILE OVERRIDES
+# ============================================================
+
+server:
+  compression:
+    enabled: true
+
+spring:
+  # DATABASE & CACHE (PROD)
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      password: ${SPRING_DATA_REDIS_PASSWORD}
+
+  # MAIL (PROD)
+  mail:
+    host: ${SPRING_MAIL_HOST}
+    port: ${SPRING_MAIL_PORT}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # GRAPHQL (PROD)
+  graphql:
+    graphiql:
+      enabled: false
+
+# ============================================================
+# CUSTOM APP PROPERTIES (PROD)
+# ============================================================
+app:
+  cors:
+    allowed-origins: ${FRONTEND_BASE_URL}
+  jwt:
+    private-key-location: ${APP_JWT_PRIVATE_KEY_LOCATION:file:/etc/secrets/private-key.pem}
+    public-key-location: ${APP_JWT_PUBLIC_KEY_LOCATION:file:/etc/secrets/public-key.pem}
+
+# ============================================================
+# LOGGING (PROD)
+# ============================================================
+logging:
+  level:
+    org.springframework.security: WARN
+  file:
+    name: ${LOG_FILE:/var/log/feedchain/backend.log}

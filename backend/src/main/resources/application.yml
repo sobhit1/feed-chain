@@ -7,16 +7,10 @@ server:
 spring:
   application:
     name: ${APP_NAME:feedchain-backend}
-
-  # ============================================================
-  # PROFILES
-  # ============================================================
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
-  # ============================================================
   # DATABASE & CACHE CONFIGURATION
-  # ============================================================
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/feedchain}
@@ -26,9 +20,7 @@ spring:
       port: ${SPRING_DATA_REDIS_PORT:6379}
       password: ${SPRING_DATA_REDIS_PASSWORD:}
 
-  # ============================================================
   # MAIL CONFIGURATION
-  # ============================================================
   mail:
     host: ${SPRING_MAIL_HOST:localhost}
     port: ${SPRING_MAIL_PORT:1025}
@@ -39,9 +31,7 @@ spring:
           starttls:
             enable: false
 
-  # ============================================================
   # SECURITY & OAUTH2 CONFIGURATION
-  # ============================================================
   security:
     oauth2:
       client:
@@ -59,9 +49,7 @@ spring:
           issuer-uri: ${API_BASE_URL:http://localhost:8080}
           jwk-set-uri: ${API_BASE_URL:http://localhost:8080}/.well-known/jwks.json
 
-  # ============================================================
   # GRAPHQL CONFIGURATION
-  # ============================================================
   graphql:
     http:
       path: /graphql
@@ -73,21 +61,28 @@ spring:
 # CUSTOM APPLICATION PROPERTIES
 # ============================================================
 app:
-  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+  cors:
+    allowed-origins: ${FRONTEND_BASE_URL:http://localhost:5173,http://localhost:3000}
   jwt:
-    private-key-location: ${APP_JWT_PRIVATE_KEY_LOCATION:classpath:keystore/private.pem}
-    public-key-location: ${APP_JWT_PUBLIC_KEY_LOCATION:classpath:keystore/public.pem}
+    private-key-location: ${APP_JWT_PRIVATE_KEY_LOCATION:classpath:keystore/private-key.pem}
+    public-key-location: ${APP_JWT_PUBLIC_KEY_LOCATION:classpath:keystore/public-key.pem}
     access-token-expiration-ms: ${APP_JWT_ACCESS_TOKEN_EXPIRATION_MS:900000}
     refresh-token-expiration-ms: ${APP_JWT_REFRESH_TOKEN_EXPIRATION_MS:604800000}
   mail:
     from-name: ${MAIL_FROM_NAME:FeedChain Support}
     from-address: ${MAIL_FROM_ADDRESS:no-reply@feedchain.com}
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
 
 # ============================================================
 # LOGGING CONFIGURATION
 # ============================================================
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
-    com.example.backend: ${LOGGING_LEVEL_APP:DEBUG}
+    com.example.backend: ${LOGGING_LEVEL_APP:INFO}
     org.springframework.security: ${LOGGING_LEVEL_SECURITY:INFO}

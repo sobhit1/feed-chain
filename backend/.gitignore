@@ -70,3 +70,8 @@ Thumbs.db
 # Cloudinary uploads
 # ----------------------------
 uploads/
+
+# ----------------------------
+# Keystore
+# ----------------------------
+src/main/resources/keystore

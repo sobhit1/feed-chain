@@ -1,0 +1,29 @@
+# ============================================================
+# DEVELOPMENT PROFILE OVERRIDES
+# ============================================================
+spring:
+  # DEVTOOLS CONFIGURATION
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+  # MAIL CONFIGURATION (DEV)
+  mail:
+    host: localhost
+    port: 1025
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# ============================================================
+# LOGGING CONFIGURATION (DEV)
+# ============================================================
+logging:
+  level:
+    com.example.backend: DEBUG
+    org.springframework.security: DEBUG
