@@ -64,7 +64,6 @@ public class SecurityConfig {
                 .jwt(jwt -> jwt.decoder(jwtDecoder()))
             )
 
-
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
